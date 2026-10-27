@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | HydroSafe AI</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #e7f4f0, #d7e8e6);
+            color: #263238;
+        }
+
+        .register-card {
+            width: 100%;
+            max-width: 440px;
+            background: white;
+            padding: 36px;
+            border-radius: 18px;
+            box-shadow: 0 12px 35px rgba(18, 60, 58, 0.13);
+        }
+
+        .logo {
+            text-align: center;
+            color: #123c3a;
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .logo span {
+            color: #1e9b89;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #718582;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            font-size: 22px;
+            text-align: center;
+            margin-bottom: 24px;
+            color: #123c3a;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 13px;
+            border: 1px solid #d4e2df;
+            border-radius: 8px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        input:focus {
+            border-color: #1e7a70;
+            box-shadow: 0 0 0 3px rgba(30, 122, 112, 0.10);
+        }
+
+        .submit-btn {
+            width: 100%;
+            border: none;
+            padding: 13px;
+            margin-top: 6px;
+            background: #1e7a70;
+            color: white;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .submit-btn:hover {
+            background: #155e57;
+        }
+
+        .message {
+            padding: 11px;
+            margin-bottom: 15px;
+            border-radius: 7px;
+            background: #fff0ef;
+            color: #b42318;
+            font-size: 13px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 22px;
+            font-size: 14px;
+            color: #607d7b;
+        }
+
+        .footer a {
+            color: #1e7a70;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        @media (max-width: 480px) {
+            .register-card {
+                padding: 27px 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="register-card">
+        <div class="logo">Hydro<span>Safe</span> AI</div>
+
+        <p class="subtitle">
+            Create your account to start analyzing water quality.
+        </p>
+
+        <h1>Create Account</h1>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST" action="{% url 'register' %}">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    placeholder="Choose a username"
+                    autocomplete="username"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="Enter your email"
+                    autocomplete="email"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Create a password"
+                    autocomplete="new-password"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="confirm_password">Confirm Password</label>
+                <input
+                    type="password"
+                    id="confirm_password"
+                    name="confirm_password"
+                    placeholder="Re-enter your password"
+                    autocomplete="new-password"
+                    required
+                >
+            </div>
+
+            <button type="submit" class="submit-btn">
+                Create My Account
+            </button>
+        </form>
+
+        <p class="footer">
+            Already have an account?
+            <a href="{% url 'login' %}">Login</a>
+        </p>
+    </div>
+</body>
+</html>

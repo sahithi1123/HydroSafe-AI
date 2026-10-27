@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>HydroSafe AI - Microscopic Analysis</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f7f6;
+            color: #263238;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 240px;
+            background: #123c3a;
+            color: white;
+            padding: 25px 18px;
+            flex-shrink: 0;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 40px;
+            padding-left: 10px;
+        }
+
+        .logo span {
+            color: #70d6c7;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 13px 15px;
+            margin-bottom: 8px;
+            color: #d8eeee;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: #1e5c57;
+            color: white;
+        }
+
+        .main {
+            flex: 1;
+            padding: 30px 40px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+        }
+
+        .topbar h1 {
+            font-size: 26px;
+        }
+
+        .status {
+            background: #e1f5ee;
+            color: #18794e;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+
+        .card {
+            background: white;
+            padding: 24px;
+            border-radius: 14px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+            margin-bottom: 18px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 16px;
+        }
+
+        .ml-result {
+            background: #eef8f5;
+            border-left: 4px solid #1e7a70;
+            border-radius: 7px;
+            padding: 15px 18px;
+        }
+
+        .ml-label {
+            color: #607d7b;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        .ml-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1e7a70;
+        }
+
+        .upload-box {
+            border: 2px dashed #b8ceca;
+            border-radius: 10px;
+            padding: 32px;
+            text-align: center;
+            background: #fafcfc;
+        }
+
+        .upload-text {
+            font-size: 14px;
+            color: #607d7b;
+            margin-bottom: 15px;
+        }
+
+        .add-btn {
+            display: inline-block;
+            background: #1e7a70;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 7px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .add-btn:hover {
+            background: #155e57;
+        }
+
+        .image-input {
+            display: none;
+        }
+
+        .preview-section {
+            margin-top: 20px;
+        }
+
+        .preview-heading {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .preview-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+
+        .preview-card {
+            width: 125px;
+            height: 125px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 9px;
+            border: 1px solid #d7e3e1;
+            background: #f1f5f4;
+        }
+
+        .preview-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .remove-image {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            width: 24px;
+            height: 24px;
+            border: none;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.65);
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .remove-image:hover {
+            background: #d9534f;
+        }
+
+        .analyze-btn {
+            margin-top: 20px;
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 7px;
+            background: #1e7a70;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .analyze-btn:hover {
+            background: #155e57;
+        }
+
+        .error-box {
+            background: #fff0f0;
+            border-left: 4px solid #d9534f;
+            color: #a94442;
+            padding: 13px;
+            border-radius: 7px;
+            margin-bottom: 18px;
+            font-size: 13px;
+        }
+
+        @media (max-width: 650px) {
+
+            .sidebar {
+                width: 190px;
+            }
+
+            .main {
+                padding: 22px;
+            }
+
+            .preview-card {
+                width: 105px;
+                height: 105px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="layout">
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            Hydro<span>Safe</span> AI
+        </div>
+
+        <a href="{% url 'home' %}" class="nav-item">
+            Dashboard
+        </a>
+
+        <a href="{% url 'analysis' %}" class="nav-item">
+            Water Analysis
+        </a>
+
+        <a
+            href="{% url 'microscopic_analysis' %}"
+            class="nav-item active"
+        >
+            Microscopic Analysis
+        </a>
+
+        <a href="{% url 'final_report' %}" class="nav-item">
+            Reports
+        </a>
+
+    </aside>
+
+
+    <main class="main">
+
+        <div class="topbar">
+
+            <h1>Microscopic Analysis</h1>
+
+            <div class="status">
+                ● System Ready
+            </div>
+
+        </div>
+
+
+        {% if error_message %}
+
+            <div class="error-box">
+                {{ error_message }}
+            </div>
+
+        {% endif %}
+
+
+        <!-- WATER RESULT -->
+
+        <div class="card">
+
+            <div class="card-title">
+                Water Quality Result
+            </div>
+
+            <div class="ml-result">
+
+                <div class="ml-label">
+                    Water Quality Prediction
+                </div>
+
+                <div class="ml-value">
+                    {{ ml_prediction }}
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- IMAGE UPLOAD -->
+
+        <div class="card">
+
+            <div class="card-title">
+                Upload Microscopic Images
+            </div>
+
+
+            <form
+                method="POST"
+                enctype="multipart/form-data"
+                id="imageForm"
+            >
+
+                {% csrf_token %}
+
+
+                <div class="upload-box" id="uploadBox">
+
+                    <div class="upload-text">
+                        Select microscopic images of your water sample
+                    </div>
+
+                    <label
+                        for="imageInput"
+                        class="add-btn"
+                    >
+                        Add Images
+                    </label>
+
+                </div>
+
+
+                <input
+                    type="file"
+                    name="water_images"
+                    id="imageInput"
+                    class="image-input"
+                    accept="image/*"
+                    multiple
+                >
+
+
+                <div
+                    class="preview-section"
+                    id="previewSection"
+                    style="display:none;"
+                >
+
+                    <div class="preview-heading">
+                        Selected Images
+                    </div>
+
+                    <div
+                        class="preview-grid"
+                        id="previewGrid"
+                    ></div>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="analyze-btn"
+                    id="analyzeButton"
+                    style="display:none;"
+                >
+                    Analyze Images
+                </button>
+
+            </form>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<script>
+
+    const imageInput =
+        document.getElementById("imageInput");
+
+    const previewSection =
+        document.getElementById("previewSection");
+
+    const previewGrid =
+        document.getElementById("previewGrid");
+
+    const analyzeButton =
+        document.getElementById("analyzeButton");
+
+
+    let selectedFiles = [];
+
+
+    imageInput.addEventListener(
+        "change",
+        function(event) {
+
+            const newFiles =
+                Array.from(event.target.files);
+
+            selectedFiles =
+                selectedFiles.concat(newFiles);
+
+            updatePreviews();
+
+        }
+    );
+
+
+    function updatePreviews() {
+
+        previewGrid.innerHTML = "";
+
+
+        if (selectedFiles.length === 0) {
+
+            previewSection.style.display = "none";
+            analyzeButton.style.display = "none";
+
+            imageInput.value = "";
+
+            return;
+        }
+
+
+        previewSection.style.display = "block";
+        analyzeButton.style.display = "block";
+
+
+        selectedFiles.forEach(
+            function(file, index) {
+
+                const reader =
+                    new FileReader();
+
+
+                reader.onload =
+                    function(e) {
+
+                        const card =
+                            document.createElement("div");
+
+                        card.className =
+                            "preview-card";
+
+
+                        const image =
+                            document.createElement("img");
+
+                        image.src =
+                            e.target.result;
+
+
+                        const removeButton =
+                            document.createElement("button");
+
+                        removeButton.type = "button";
+
+                        removeButton.className =
+                            "remove-image";
+
+                        removeButton.innerHTML = "×";
+
+
+                        removeButton.onclick =
+                            function() {
+
+                                selectedFiles.splice(
+                                    index,
+                                    1
+                                );
+
+                                rebuildInput();
+
+                                updatePreviews();
+
+                            };
+
+
+                        card.appendChild(image);
+
+                        card.appendChild(removeButton);
+
+                        previewGrid.appendChild(card);
+
+                    };
+
+
+                reader.readAsDataURL(file);
+
+            }
+        );
+
+
+        rebuildInput();
+
+    }
+
+
+    function rebuildInput() {
+
+        const dataTransfer =
+            new DataTransfer();
+
+
+        selectedFiles.forEach(
+            function(file) {
+
+                dataTransfer.items.add(file);
+
+            }
+        );
+
+
+        imageInput.files =
+            dataTransfer.files;
+
+    }
+
+
+    document
+        .getElementById("uploadBox")
+        .addEventListener(
+            "click",
+            function(event) {
+
+                if (event.target.tagName !== "LABEL") {
+                    imageInput.click();
+                }
+
+            }
+        );
+
+</script>
+
+</body>
+</html>

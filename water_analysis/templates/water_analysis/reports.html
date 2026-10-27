@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report History | HydroSafe AI</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f7f6;
+            color: #263238;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 245px;
+            background: #123c3a;
+            color: white;
+            padding: 27px 18px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            margin-bottom: 35px;
+            padding-left: 10px;
+        }
+
+        .logo span {
+            color: #70d6c7;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 13px 15px;
+            margin-bottom: 8px;
+            color: #d8eeee;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: #1e5c57;
+            color: white;
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+            padding-top: 20px;
+        }
+
+        .user-label {
+            border-top: 1px solid #315b58;
+            padding: 15px 10px;
+            font-size: 13px;
+            overflow-wrap: anywhere;
+        }
+
+        .logout-btn {
+            width: 100%;
+            padding: 12px;
+            background: transparent;
+            color: #ffd9d6;
+            border: 1px solid #64817e;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .logout-btn:hover {
+            background: #a83d3d;
+            color: white;
+        }
+
+        .main {
+            flex: 1;
+            min-width: 0;
+            padding: 35px 40px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #123c3a;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            margin-top: 8px;
+            color: #718582;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .count {
+            background: #e1f5ee;
+            color: #18794e;
+            padding: 10px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        .summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            background: white;
+            padding: 22px 25px;
+            border-radius: 13px;
+            margin-bottom: 22px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+        }
+
+        .summary h2 {
+            color: #123c3a;
+            font-size: 18px;
+            margin-bottom: 7px;
+        }
+
+        .summary p {
+            color: #718582;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .table-card {
+            background: white;
+            border-radius: 14px;
+            padding: 22px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+
+        th {
+            background: #eef6f4;
+            color: #315b57;
+            text-align: left;
+            padding: 15px 12px;
+            font-size: 13px;
+        }
+
+        td {
+            padding: 16px 12px;
+            border-bottom: 1px solid #e8efed;
+            font-size: 13px;
+            vertical-align: middle;
+        }
+
+        tbody tr:hover {
+            background: #fafdfc;
+        }
+
+        .prediction {
+            display: inline-block;
+            background: #e1f5ee;
+            color: #18794e;
+            padding: 6px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .prediction.unsafe {
+            background: #fff0ef;
+            color: #b42318;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 55px 20px;
+        }
+
+        .empty h2 {
+            color: #123c3a;
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+
+        .empty p {
+            color: #718582;
+            line-height: 1.7;
+            font-size: 14px;
+            margin-bottom: 22px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 18px;
+            background: #1e7a70;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .btn:hover {
+            background: #155e57;
+        }
+
+        @media (max-width: 700px) {
+            .layout {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+            }
+
+            .sidebar-bottom {
+                margin-top: 15px;
+            }
+
+            .main {
+                padding: 25px 16px;
+            }
+
+            .topbar,
+            .summary {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="layout">
+
+    <aside class="sidebar">
+        <div class="logo">Hydro<span>Safe</span> AI</div>
+
+        <nav>
+            <a href="{% url 'home' %}" class="nav-item">
+                Dashboard
+            </a>
+
+            <a href="{% url 'analysis' %}" class="nav-item">
+                Water Analysis
+            </a>
+
+            <a href="{% url 'microscopic_analysis' %}" class="nav-item">
+                Microscopic Analysis
+            </a>
+
+            <a href="{% url 'reports' %}" class="nav-item active">
+                Report History
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="user-label">
+                Logged in as<br>
+                <strong>{{ request.user.username }}</strong>
+            </div>
+
+            <form method="POST" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="logout-btn">
+                    ↪ Logout
+                </button>
+            </form>
+        </div>
+    </aside>
+
+    <main class="main">
+
+        <header class="topbar">
+            <div>
+                <h1>Report History</h1>
+                <p class="subtitle">
+                    View the water quality reports generated by your account.
+                </p>
+            </div>
+
+            <div class="count">
+                {{ report_count }} Saved Report{{ report_count|pluralize }}
+            </div>
+        </header>
+
+        <section class="summary">
+            <div>
+                <h2>Your Analysis Reports</h2>
+                <p>
+                    Your saved reports are private to your account.
+                </p>
+            </div>
+
+            <a href="{% url 'analysis' %}?reset=1" class="btn">
+                + New Analysis
+            </a>
+        </section>
+
+        <section class="table-card">
+
+            {% if reports %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Report ID</th>
+                            <th>Date Created</th>
+                            <th>ML Prediction</th>
+                            <th>Fusion Assessment</th>
+                            <th>AI Report</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for report in reports %}
+                            <tr>
+                                <td>#{{ report.id }}</td>
+
+                                <td>
+                                    {{ report.created_at|date:"d M Y, h:i A" }}
+                                </td>
+
+                                <td>
+                                    {% if report.ml_prediction == "Potable" %}
+                                        <span class="prediction">
+                                            {{ report.ml_prediction }}
+                                        </span>
+                                    {% else %}
+                                        <span class="prediction unsafe">
+                                            {{ report.ml_prediction }}
+                                        </span>
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    {{ report.fusion_result.result|default:"Not available" }}
+                                </td>
+
+                                <td>
+                                    Saved successfully
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            {% else %}
+                <div class="empty">
+                    <h2>No Reports Yet</h2>
+
+                    <p>
+                        You haven't generated any saved AI reports yet.
+                        Complete a water analysis and generate your first
+                        Gemini report to see it here.
+                    </p>
+
+                    <a href="{% url 'analysis' %}?reset=1" class="btn">
+                        Start Your First Analysis
+                    </a>
+                </div>
+            {% endif %}
+
+        </section>
+    </main>
+</div>
+</body>
+</html>

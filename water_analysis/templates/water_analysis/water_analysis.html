@@ -1,0 +1,601 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>HydroSafe AI - Water Analysis</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f7f6;
+            color: #263238;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 240px;
+            background: #123c3a;
+            color: white;
+            padding: 25px 18px;
+            flex-shrink: 0;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 40px;
+            padding-left: 10px;
+        }
+
+        .logo span {
+            color: #70d6c7;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 13px 15px;
+            margin-bottom: 8px;
+            color: #d8eeee;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: #1e5c57;
+            color: white;
+        }
+
+        .main {
+            flex: 1;
+            min-width: 0;
+            padding: 30px 40px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 28px;
+        }
+
+        .topbar h1 {
+            font-size: 26px;
+        }
+
+        .status {
+            background: #e1f5ee;
+            color: #18794e;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        .card {
+            background: white;
+            padding: 24px;
+            border-radius: 14px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 14px;
+        }
+
+        .card-description {
+            color: #607d7b;
+            font-size: 13px;
+            line-height: 1.6;
+            margin-bottom: 18px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .form-group label {
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 7px;
+            color: #455a64;
+        }
+
+        .form-group input {
+            width: 100%;
+            min-width: 0;
+            padding: 11px 12px;
+            border: 1px solid #d5dddd;
+            border-radius: 7px;
+            outline: none;
+            font-size: 14px;
+            background: #fafcfc;
+        }
+
+        .form-group input:focus {
+            border-color: #1e7a70;
+            background: white;
+        }
+
+        .upload-input {
+            padding: 14px !important;
+            border: 1px dashed #9dbbb5 !important;
+            background: #f8fbfa !important;
+            cursor: pointer;
+        }
+
+        .analyze-btn,
+        .continue-btn {
+            margin-top: 20px;
+            padding: 12px 18px;
+            border: none;
+            border-radius: 7px;
+            background: #1e7a70;
+            color: white;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .analyze-btn:hover,
+        .continue-btn:hover {
+            background: #155e57;
+        }
+
+        .result {
+            background: #eef8f5;
+            border-left: 4px solid #1e7a70;
+            border-radius: 7px;
+            padding: 16px 18px;
+        }
+
+        .result-label {
+            color: #607d7b;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        .result-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1e7a70;
+        }
+
+        .success-box {
+            background: #eaf8f0;
+            border-left: 4px solid #229765;
+            color: #176b49;
+            padding: 14px 16px;
+            border-radius: 7px;
+            margin-bottom: 18px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .error-box {
+            background: #fff0f0;
+            border-left: 4px solid #d9534f;
+            color: #a94442;
+            padding: 14px 16px;
+            border-radius: 7px;
+            margin-bottom: 18px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin: 4px 0 20px;
+            color: #78909c;
+            font-size: 12px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #e1e8e6;
+        }
+
+        .help-text {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #78909c;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 1000px) {
+            .main {
+                padding: 25px;
+            }
+
+            .form-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 650px) {
+            .layout {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: 18px;
+            }
+
+            .logo {
+                margin-bottom: 18px;
+            }
+
+            .main {
+                padding: 20px 15px;
+            }
+
+            .topbar {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                padding: 18px;
+            }
+
+            .analyze-btn,
+            .continue-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="layout">
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            Hydro<span>Safe</span> AI
+        </div>
+
+        <a href="{% url 'home' %}" class="nav-item">
+            Dashboard
+        </a>
+
+        <a href="{% url 'analysis' %}" class="nav-item active">
+            Water Analysis
+        </a>
+
+        <a href="{% url 'microscopic_analysis' %}" class="nav-item">
+            Microscopic Analysis
+        </a>
+
+        <a href="{% url 'final_report' %}" class="nav-item">
+            Reports
+        </a>
+
+    </aside>
+
+    <main class="main">
+
+        <div class="topbar">
+            <h1>Water Analysis</h1>
+
+            <div class="status">
+                ● System Ready
+            </div>
+        </div>
+
+        {% if error_message %}
+            <div class="error-box" role="alert">
+                <strong>Unable to process:</strong>
+                {{ error_message }}
+            </div>
+        {% endif %}
+
+        {% if pdf_success %}
+            <div class="success-box" role="status">
+                <strong>PDF processed successfully!</strong><br>
+                {{ pdf_success }}
+                Please review the extracted values below before analyzing.
+            </div>
+        {% endif %}
+
+        {% if not prediction %}
+
+            <!-- PDF Upload Card -->
+            <div class="card">
+
+                <div class="card-title">
+                    Upload Water Quality Report
+                </div>
+
+                <p class="card-description">
+                    Upload a text-based PDF water-quality report.
+                    HydroSafe AI will attempt to extract the nine required
+                    parameters and fill in the form automatically.
+                </p>
+
+                <form
+                    method="POST"
+                    action="{% url 'analysis' %}"
+                    enctype="multipart/form-data"
+                >
+
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <label for="water_pdf">
+                            Select PDF Document
+                        </label>
+
+                        <input
+                            type="file"
+                            id="water_pdf"
+                            name="water_pdf"
+                            class="upload-input"
+                            accept=".pdf,application/pdf"
+                            required
+                        >
+                    </div>
+
+                    <p class="help-text">
+                        PDF only · Maximum file size: 10 MB.
+                        The report must contain all nine labeled
+                        water-quality parameters.
+                    </p>
+
+                    <button
+                        type="submit"
+                        name="action"
+                        value="extract_pdf"
+                        class="analyze-btn"
+                    >
+                        Extract Values from PDF
+                    </button>
+
+                </form>
+
+            </div>
+
+            <div class="divider">OR ENTER VALUES MANUALLY</div>
+
+            <!-- Manual Water Quality Form -->
+            <div class="card">
+
+                <div class="card-title">
+                    Enter Water Quality Parameters
+                </div>
+
+                <p class="card-description">
+                    Enter the measured values manually, or review and
+                    edit the values extracted from your PDF.
+                </p>
+
+                <form
+                    method="POST"
+                    action="{% url 'analysis' %}"
+                >
+
+                    {% csrf_token %}
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+                            <label for="ph">pH</label>
+                            <input
+                                type="number"
+                                step="any"
+                                id="ph"
+                                name="ph"
+                                value="{{ form_values.ph|default:'' }}"
+                                min="0"
+                                max="14"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="Hardness">Hardness</label>
+                            <input
+                                type="number"
+                                step="any"
+                                id="Hardness"
+                                name="Hardness"
+                                value="{{ form_values.Hardness|default:'' }}"
+                                min="0"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="Solids">Solids</label>
+                            <input
+                                type="number"
+                                step="any"
+                                id="Solids"
+                                name="Solids"
+                                value="{{ form_values.Solids|default:'' }}"
+                                min="0"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="Chloramines">Chloramines</label>
+                            <input
+                                type="number"
+                                step="any"
+                                id="Chloramines"
+                                name="Chloramines"
+                                value="{{ form_values.Chloramines|default:'' }}"
+                                min="0"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="Sulfate">Sulfate</label>
+                            <input
+                                type="number"
+                                step="any"
+                                id="Sulfate"
+                                name="Sulfate"
+                                value="{{ form_values.Sulfate|default:'' }}"
+                                min="0"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="Conductivity">Conductivity</label>
+                            <input
+                                type="number"
+                                step="any"
+                                id="Conductivity"
+                                name="Conductivity"
+                                value="{{ form_values.Conductivity|default:'' }}"
+                                min="0"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="Organic_carbon">
+                                Organic Carbon
+                            </label>
+                            <input
+                                type="number"
+                                step="any"
+                                id="Organic_carbon"
+                                name="Organic_carbon"
+                                value="{{ form_values.Organic_carbon|default:'' }}"
+                                min="0"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="Trihalomethanes">
+                                Trihalomethanes
+                            </label>
+                            <input
+                                type="number"
+                                step="any"
+                                id="Trihalomethanes"
+                                name="Trihalomethanes"
+                                value="{{ form_values.Trihalomethanes|default:'' }}"
+                                min="0"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="Turbidity">Turbidity</label>
+                            <input
+                                type="number"
+                                step="any"
+                                id="Turbidity"
+                                name="Turbidity"
+                                value="{{ form_values.Turbidity|default:'' }}"
+                                min="0"
+                                required
+                            >
+                        </div>
+
+                    </div>
+
+                    <button
+                        type="submit"
+                        class="analyze-btn"
+                    >
+                        Analyze Water Quality
+                    </button>
+
+                </form>
+
+            </div>
+
+        {% else %}
+
+            <!-- Machine Learning Result -->
+            <div class="card">
+
+                <div class="card-title">
+                    Machine Learning Result
+                </div>
+
+                <div class="result">
+
+                    <div class="result-label">
+                        Water Quality Prediction
+                    </div>
+
+                    <div class="result-value">
+                        {{ prediction }}
+                    </div>
+
+                </div>
+
+                <a
+                    href="{% url 'microscopic_analysis' %}?reset=1"
+                    class="continue-btn"
+                >
+                    Continue to Microscopic Analysis
+                </a>
+
+                <a
+                    href="{% url 'analysis' %}?reset=1"
+                    class="continue-btn"
+                >
+                    Analyze Another Sample
+                </a>
+
+            </div>
+
+        {% endif %}
+
+    </main>
+
+</div>
+
+</body>
+</html>
+```

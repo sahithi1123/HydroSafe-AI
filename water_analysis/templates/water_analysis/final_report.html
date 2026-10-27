@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>HydroSafe AI - Final Report</title>
+
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f7f6;
+            color: #263238;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+
+        /* =========================
+           SIDEBAR
+        ========================= */
+
+        .sidebar {
+            width: 240px;
+            background: #123c3a;
+            color: white;
+            padding: 25px 18px;
+            flex-shrink: 0;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 40px;
+            padding-left: 10px;
+        }
+
+        .logo span {
+            color: #70d6c7;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 13px 15px;
+            margin-bottom: 8px;
+            color: #d8eeee;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: #1e5c57;
+            color: white;
+        }
+
+
+        /* =========================
+           MAIN
+        ========================= */
+
+        .main {
+            flex: 1;
+            padding: 30px 40px;
+            min-width: 0;
+        }
+
+
+        /* =========================
+           TOP BAR
+        ========================= */
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .topbar-left h1 {
+            font-size: 26px;
+        }
+
+        .topbar-left p {
+            margin-top: 5px;
+            color: #607d7b;
+            font-size: 13px;
+        }
+
+        .topbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .status {
+            background: #e1f5ee;
+            color: #18794e;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+
+        .download-btn {
+            background: #1e7a70;
+            color: white;
+            text-decoration: none;
+            padding: 10px 16px;
+            border-radius: 7px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .download-btn:hover {
+            background: #155e57;
+        }
+
+
+        /* =========================
+           COMMON SECTION
+        ========================= */
+
+        .section {
+            background: white;
+            padding: 22px 24px;
+            border-radius: 14px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+            margin-bottom: 18px;
+        }
+
+        .section-title {
+            font-size: 17px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+
+        /* =========================
+           WATER RESULT
+        ========================= */
+
+        .result-box {
+            background: #eef8f5;
+            border-left: 4px solid #1e7a70;
+            border-radius: 7px;
+            padding: 15px 18px;
+        }
+
+        .result-label {
+            font-size: 12px;
+            color: #607d7b;
+            margin-bottom: 5px;
+        }
+
+        .result-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1e7a70;
+        }
+
+
+        /* =========================
+           PARAMETERS
+        ========================= */
+
+        .parameters {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .parameter {
+            background: #f7faf9;
+            border: 1px solid #e4ecea;
+            border-radius: 7px;
+            padding: 11px 13px;
+        }
+
+        .parameter-name {
+            color: #78909c;
+            font-size: 11px;
+            margin-bottom: 4px;
+        }
+
+        .parameter-value {
+            font-size: 14px;
+            font-weight: bold;
+            color: #263238;
+        }
+
+
+        /* =========================
+           MICROSCOPIC FINDINGS
+        ========================= */
+
+        .micro-result {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 14px;
+            background: #f7faf9;
+            border: 1px solid #e4ecea;
+            border-radius: 7px;
+            margin-bottom: 8px;
+        }
+
+        .microorganism {
+            font-size: 14px;
+            font-weight: bold;
+            color: #1e7a70;
+        }
+
+        .confidence {
+            font-size: 12px;
+            color: #607d7b;
+        }
+
+
+        /* =========================
+           FINAL ASSESSMENT
+        ========================= */
+
+        .final-box {
+            background: #eef8f5;
+            border-left: 4px solid #1e7a70;
+            padding: 16px 18px;
+            border-radius: 7px;
+        }
+
+        .final-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1e7a70;
+            margin-bottom: 7px;
+        }
+
+        .final-description {
+            font-size: 13px;
+            line-height: 1.6;
+            color: #526d6a;
+        }
+
+
+        /* =========================
+           GENERATE REPORT
+        ========================= */
+
+        .generate-area {
+            text-align: center;
+            padding: 8px 0;
+        }
+
+        .generate-text {
+            color: #607d7b;
+            font-size: 13px;
+            margin-bottom: 15px;
+        }
+
+        .generate-btn {
+            border: none;
+            background: #1e7a70;
+            color: white;
+            padding: 11px 22px;
+            border-radius: 7px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .generate-btn:hover {
+            background: #155e57;
+        }
+
+
+        /* =========================
+           GENERATED REPORT
+        ========================= */
+
+        .report-section {
+            background: white;
+            padding: 26px 28px;
+            border-radius: 14px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+        }
+
+        .report-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .report-content {
+            background: #fafcfc;
+            border: 1px solid #e0e9e7;
+            border-radius: 8px;
+            padding: 22px;
+            color: #37474f;
+            font-size: 13px;
+            line-height: 1.7;
+            white-space: pre-wrap;
+        }
+
+        .important-note {
+            margin-top: 15px;
+            padding: 12px 14px;
+            background: #fff8e1;
+            border-left: 4px solid #ffb300;
+            border-radius: 6px;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 900px) {
+
+            .parameters {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+
+
+        @media (max-width: 650px) {
+
+            .sidebar {
+                width: 190px;
+            }
+
+            .main {
+                padding: 22px;
+            }
+
+            .parameters {
+                grid-template-columns: 1fr;
+            }
+
+            .topbar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .topbar-actions {
+                width: 100%;
+            }
+
+            .micro-result {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="layout">
+
+
+    <!-- =========================
+         SIDEBAR
+    ========================= -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            Hydro<span>Safe</span> AI
+        </div>
+
+
+        <a
+            href="{% url 'home' %}"
+            class="nav-item"
+        >
+            Dashboard
+        </a>
+
+
+        <a
+            href="{% url 'analysis' %}"
+            class="nav-item"
+        >
+            Water Analysis
+        </a>
+
+
+        <a
+            href="{% url 'microscopic_analysis' %}"
+            class="nav-item"
+        >
+            Microscopic Analysis
+        </a>
+
+
+        <a
+            href="{% url 'final_report' %}"
+            class="nav-item active"
+        >
+            Reports
+        </a>
+
+    </aside>
+
+
+
+    <!-- =========================
+         MAIN
+    ========================= -->
+
+    <main class="main">
+
+
+        <!-- TOP BAR -->
+
+        <div class="topbar">
+
+            <div class="topbar-left">
+
+                <h1>Final Report</h1>
+
+                <p>
+                    HydroSafe AI Water Quality Report
+                </p>
+
+            </div>
+
+
+            <div class="topbar-actions">
+
+
+                {% if ai_report %}
+
+                    <a
+                        href="{% url 'download_report' %}"
+                        class="download-btn"
+                    >
+                        Download PDF
+                    </a>
+
+                {% endif %}
+
+
+                <div class="status">
+
+                    ● Analysis Complete
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        {% if ai_report %}
+
+            <!-- =================================================
+                 AFTER GENERATE REPORT
+                 SHOW ONLY THE AI REPORT
+            ================================================== -->
+
+            <div class="report-section">
+
+                <div class="report-title">
+                    Water Quality Report
+                </div>
+
+
+                <div class="report-content">
+                    {{ ai_report }}
+                </div>
+
+
+                <div class="important-note">
+
+                    <strong>Important:</strong>
+                    This report is generated from the
+                    available analysis results and should
+                    not replace certified laboratory
+                    water testing.
+
+                </div>
+
+            </div>
+
+
+        {% else %}
+
+
+            <!-- =================================================
+                 BEFORE GENERATE REPORT
+            ================================================== -->
+
+
+            <!-- WATER QUALITY -->
+
+            <div class="section">
+
+                <div class="section-title">
+                    Water Quality Result
+                </div>
+
+
+                <div class="result-box">
+
+                    <div class="result-label">
+                        Water Quality Prediction
+                    </div>
+
+                    <div class="result-value">
+                        {{ ml_prediction }}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- WATER PARAMETERS -->
+
+            {% if water_parameters %}
+
+            <div class="section">
+
+                <div class="section-title">
+                    Water Parameters
+                </div>
+
+
+                <div class="parameters">
+
+                    {% for key, value in water_parameters.items %}
+
+                        <div class="parameter">
+
+                            <div class="parameter-name">
+                                {{ key }}
+                            </div>
+
+                            <div class="parameter-value">
+                                {{ value }}
+                            </div>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+
+
+            <!-- MICROSCOPIC FINDINGS -->
+
+            <div class="section">
+
+                <div class="section-title">
+                    Microscopic Findings
+                </div>
+
+
+                {% for result in dl_results %}
+
+                    <div class="micro-result">
+
+                        <div class="microorganism">
+                            {{ result.microorganism }}
+                        </div>
+
+
+                        <div class="confidence">
+
+                            Confidence:
+                            {{ result.confidence }}%
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+
+
+            <!-- FINAL ASSESSMENT -->
+
+            <div class="section">
+
+                <div class="section-title">
+                    Final Assessment
+                </div>
+
+
+                {% if fusion_result %}
+
+                    <div class="final-box">
+
+                        <div class="final-title">
+                            {{ fusion_result.result }}
+                        </div>
+
+
+                        <div class="final-description">
+                            {{ fusion_result.explanation }}
+                        </div>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+
+            <!-- GENERATE -->
+
+            <div class="section">
+
+                <div class="section-title">
+                    Water Quality Report
+                </div>
+
+
+                <div class="generate-area">
+
+                    <div class="generate-text">
+                        Generate the detailed water quality report.
+                    </div>
+
+
+                    <form
+                        method="POST"
+                        action="{% url 'generate_ai_report' %}"
+                    >
+
+                        {% csrf_token %}
+
+                        <button
+                            type="submit"
+                            class="generate-btn"
+                        >
+                            Generate Report
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+
+        {% endif %}
+
+
+    </main>
+
+</div>
+
+</body>
+
+</html>
